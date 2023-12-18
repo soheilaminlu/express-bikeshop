@@ -1,5 +1,8 @@
 const passport = require("passport");
 const User = require("../models/Users");
+const baseUrl = process.env.BASE_URL;
+const axios = require('axios');
+
 
 module.exports.signupUser = async (req, res, next) => {
   try {
@@ -35,6 +38,7 @@ module.exports.loginUser = (req, res, next) => {
       if (error) {
         return res.status(400).json({ error: "Failed to login" });
       }
+      console.log(req.session.passport.user.role)
       return res.status(200).json({ message: "Login successful" });
       
     });
@@ -49,3 +53,7 @@ module.exports.logoutUser = async (req, res) => {
     res.status(500).json({ error: "Internal server" });
   }
 };
+
+module.exports.getAdminPanel = async (req , res) =>{
+
+}

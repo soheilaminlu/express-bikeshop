@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 //----IMPORTS----
 const express = require("express");
 const app = express();
