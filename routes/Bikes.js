@@ -9,9 +9,12 @@ const router = express.Router();
 
 const {cacheError} = require('../middlewares/errorHandlling/cacheError')
 
+//----CHECK IF USER LOGIN
+const {isAuthenticated} = require('../middlewares/authentication/isAuthenticated')
+
 router.get("/bikes", cacheError(showAllBikes));
-router.post("/bikes", cacheError(addNewBikes));
-router.put("/bikes/:id", cacheError(editBikes));
-router.delete("/bikes/:id", cacheError(deleteBikes));
+router.post("/bikes", isAuthenticated ,cacheError(addNewBikes));
+router.put("/bikes/:id", isAuthenticated,cacheError(editBikes));
+router.delete("/bikes/:id", isAuthenticated ,cacheError(deleteBikes));
 
 module.exports = router;

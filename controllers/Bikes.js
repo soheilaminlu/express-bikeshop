@@ -1,5 +1,6 @@
 const Bike = require("../models/Bikes");
 
+
 module.exports.showAllBikes = async (req, res) => {
   await res.send("successful to show bikes");
   const bikes = await Bike.find({});

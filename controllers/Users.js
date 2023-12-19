@@ -2,6 +2,7 @@ const passport = require("passport");
 const User = require("../models/Users");
 const baseUrl = process.env.BASE_URL;
 const axios = require('axios');
+const { Session } = require("express-session");
 
 
 module.exports.signupUser = async (req, res, next) => {
@@ -18,6 +19,7 @@ module.exports.signupUser = async (req, res, next) => {
       if (error) {
         return next(error);
       }
+      
       return res.status(201).json({ message: "Signup successful" });
     });
   } catch (error) {
@@ -26,21 +28,29 @@ module.exports.signupUser = async (req, res, next) => {
   }
 };
 
-module.exports.loginUser = (req, res, next) => {
-  passport.authenticate("local", (error, user, info) => {
+module.exports.loginUser =  (req, res, next) => {
+  passport.authenticate  ("local", (error, user, info) => {
     if (error) {
       return res.status(400).json({ error: "Login error" });
     }
     if (!user) {
       return res.status(400).json({ error: "This account does not exist" });
     }
-    req.login(user, (error) => {
+
+    req.login (user, async (error) => {
       if (error) {
         return res.status(400).json({ error: "Failed to login" });
       }
-      console.log(req.session.passport.user.role)
-      return res.status(200).json({ message: "Login successful" });
-      
+
+      req.session.passport.user.role = 'user'
+      req.session.save((err)=>{
+        if(err) {
+          res.status(400).json("error to login")
+        } else {
+          console.log(req.session.passport.user.role)
+          return res.status(200).json({ message: "Login successful" });
+        }
+      })
     });
   })(req, res, next);
 };

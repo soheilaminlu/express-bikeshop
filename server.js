@@ -68,6 +68,11 @@ passport.serializeUser((user , done) => {
 });
 passport.deserializeUser(User.deserializeUser());
 
+//--TEST ROUTE 
+app.get('/' , (req , res) => {
+  res.send('HEY')
+})
+
 
 //----CONFIG ROUTES-----
 app.use("/api", bikesRoute);
