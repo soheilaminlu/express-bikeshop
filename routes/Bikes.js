@@ -5,16 +5,19 @@ const {
   editBikes,
   deleteBikes,
 } = require("../controllers/Bikes");
+
 const router = express.Router();
 
-const {cacheError} = require('../middlewares/errorHandlling/cacheError')
+const {cacheError} = require('../middlewares/errorHandlling/cacheError');
 
 //----CHECK IF USER LOGIN
-const {isAuthenticated} = require('../middlewares/authentication/isAuthenticated')
+const {isLoggedIn} = require('../middlewares/authentication/isLoggedin');
+//----ONLY AUTHOR CAN EDIT AND DELETE
+const {isBikeAuthor} = require('../middlewares/authentication/isAuthor');
 
 router.get("/bikes", cacheError(showAllBikes));
-router.post("/bikes", isAuthenticated ,cacheError(addNewBikes));
-router.put("/bikes/:id", isAuthenticated,cacheError(editBikes));
-router.delete("/bikes/:id", isAuthenticated ,cacheError(deleteBikes));
+router.post("/bikes", isLoggedIn ,cacheError(addNewBikes));
+router.put("/bikes/:id", isLoggedIn, isBikeAuthor, cacheError(editBikes));
+router.delete("/bikes/:id", isLoggedIn ,isBikeAuthor,cacheError(deleteBikes));
 
 module.exports = router;

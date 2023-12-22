@@ -9,10 +9,16 @@ const {
 
 const {cacheError} = require('../middlewares/errorHandlling/cacheError')
 
+//----CHECK IF USER LOGIN
+const {isLoggedIn} = require('../middlewares/authentication/isLoggedin')
+
+// ONLY AUTHOR CAN EDIT AND DELETE
+const {isMotorAuthor} = require('../middlewares/authentication/isAuthor')
+
 
 router.get("/motors",  cacheError(showAllMotors));
-router.post("/motors", cacheError(addNewMotors));
-router.put("/motors/:id", cacheError(editMotors));
-router.delete("/motors/:id", cacheError(deleteMotors));
+router.post("/motors", isLoggedIn,cacheError(addNewMotors));
+router.put("/motors/:id", isLoggedIn,cacheError(editMotors));
+router.delete("/motors/:id", isLoggedIn,cacheError(deleteMotors));
 
 module.exports = router;

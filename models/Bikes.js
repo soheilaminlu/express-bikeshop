@@ -13,7 +13,12 @@ const bikeSchema = new Schema({
         type:Number,
         Enum:[20 , 22 , 24 , 26 , 28]
   },
-  imageUrl:String
+  imageUrl:String , 
+  
+  author: {
+    type:Schema.Types.ObjectId,
+    ref:'User'
+}
 })
 
 module.exports = mongoose.model('Bike' , bikeSchema)

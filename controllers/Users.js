@@ -1,8 +1,7 @@
 const passport = require("passport");
 const User = require("../models/Users");
-const baseUrl = process.env.BASE_URL;
-const axios = require('axios');
-const { Session } = require("express-session");
+
+
 
 
 module.exports.signupUser = async (req, res, next) => {
@@ -41,8 +40,10 @@ module.exports.loginUser =  (req, res, next) => {
       if (error) {
         return res.status(400).json({ error: "Failed to login" });
       }
-
-      req.session.passport.user.role = 'user'
+      if(req.session.passport.user.role === 'viewer') {
+       req.session.passport.user.role === 'user'
+      }
+      console.log( req.session)
       req.session.save((err)=>{
         if(err) {
           res.status(400).json("error to login")
@@ -57,13 +58,21 @@ module.exports.loginUser =  (req, res, next) => {
 
 module.exports.logoutUser = async (req, res) => {
   try {
-    req.session.destroy();
+    req.logOut((err) =>{
+      if(err) return res.status(500).json("logout failed")
+    }) 
     res.status(200).json("GoodBye");
   } catch (error) {
+    console.log(error.message)
     res.status(500).json({ error: "Internal server" });
   }
 };
 
 module.exports.getAdminPanel = async (req , res) =>{
-
+  console.log(req.session)
+   if(req.session.passport.user.role === 'admin') {
+    res.status(200).json("Welcome to Admin Panel")
+   } else {
+    res.status(403).json("Permission Denied")
+   }
 }

@@ -17,6 +17,7 @@ const motorsRoute = require("./routes/MotorCycles");
 const usersRoute = require("./routes/Users");
 const adminRoute = require("./routes/Admin");
 const uploadRoute = require("./routes/Upload-image");
+const cookieParser = require('cookie-parser')
 
 //---- CORS CONFIG FOR REACT FETCH REQUESTS----
 const corsOption = {
@@ -30,10 +31,11 @@ app.use(cors(corsOption));
 DBconfig();
 
 //BODYPARSER
+app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
 
 //----MULTER CONFIG FOR UPLOAD IMAGE----
-app.use("/upload", uploadRoute);
 app.use(express.static("images"));
 
 //-----SESSION CONFIG----
@@ -50,7 +52,7 @@ const sessionOption = {
   }),
   cookie: {
     httpOnly: true,
-    secure: true,
+    secure:false , 
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
@@ -66,7 +68,12 @@ passport.use(strategy);
 passport.serializeUser((user , done) => {
   done(null , {id: user.id , role : user.role});
 });
-passport.deserializeUser(User.deserializeUser());
+passport.deserializeUser((serializedUser, done) => {
+  User.findById(serializedUser.id, (err, user) => {
+    done(err, user);
+  });
+});
+
 
 //--TEST ROUTE 
 app.get('/' , (req , res) => {
