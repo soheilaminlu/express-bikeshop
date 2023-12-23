@@ -13,8 +13,9 @@ module.exports.showAllBikes = async (req, res) => {
 module.exports.addNewBikes = async (req, res) => {
   try {
     const { name, size, price, categories, imageUrl } = req.body;
-    const newBike = new Bike({ name, size, price, categories, imageUrl });
+    const newBike = new Bike({ name, size, price, categories, imageUrl , author:req.user._id });
     await newBike.save();
+    await  newBike.populate('author').execPopulate()
     res.status(200).json({message:"Bike is added successfuly" ,  newbike: newBike});
   } catch (e) {
     res.status(500).json("Internal server");
@@ -23,19 +24,26 @@ module.exports.addNewBikes = async (req, res) => {
 
 module.exports.editBikes = async (req, res) => {
   try {
-    const bikeId = req.params.id;
-    const updateBike = Bike.findByIdAndUpdate(bikeId , {...req.body.updateBike} , {new:true});
-    await updateBike.save();
-    res.status(200).json("your bike updated successfuly");
+    const  bikeId  = req.params.id;
+    const updateBike = await Bike.findByIdAndUpdate(
+      bikeId,
+      req.body,
+      { new: true }
+    );
+
+    if (!updateBike) {
+      return res.status(404).json({ error: "Bike not found" });
+    }
+    res.status(200).json({ message: "Your bike updated successfully", updatedBike: updateBike });
   } catch (e) {
-    res.status(500).json({ e: "failed to Update" });
+    res.status(500).json({ error: "Failed to update" });
   }
 };
 
 module.exports.deleteBikes = async (req, res) => {
   try {
     const bikeId = req.params.id;
-    const deleteBike = await Bike.findByIdAndDelete(bikeId).populate('author');
+    const deleteBike = await Bike.findByIdAndDelete(bikeId);
     res.status(200).json({message:"Bike deleted successfuly",message1: deleteBike});
   } catch (e) {
     res.status(500).json({ e: "Failed to delete" });

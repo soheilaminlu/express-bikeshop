@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { loginUser, logoutUser, signupUser , getAdminPanel } = require("../controllers/Users");
 const {cacheError} = require('../middlewares/errorHandlling/cacheError');
-const {isAdmin} =require('../middlewares/authentication/isAdmin')
+
 
 router.post("/login", loginUser);
 router.post("/signup", signupUser);

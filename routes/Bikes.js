@@ -17,7 +17,7 @@ const {isBikeAuthor} = require('../middlewares/authentication/isAuthor');
 
 router.get("/bikes", cacheError(showAllBikes));
 router.post("/bikes", isLoggedIn ,cacheError(addNewBikes));
-router.put("/bikes/:id", isLoggedIn, isBikeAuthor, cacheError(editBikes));
+router.put("/bikes/:id", isLoggedIn, isBikeAuthor,editBikes);
 router.delete("/bikes/:id", isLoggedIn ,isBikeAuthor,cacheError(deleteBikes));
 
 module.exports = router;
