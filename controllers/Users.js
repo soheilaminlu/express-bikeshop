@@ -1,5 +1,7 @@
 const passport = require("passport");
 const User = require("../models/Users");
+const { default: axios } = require("axios");
+const baseUrl = process.env.BASE_URL
 
 
 
@@ -71,7 +73,9 @@ module.exports.logoutUser = async (req, res) => {
 module.exports.getAdminPanel = async (req , res) =>{
   console.log(req.session)
    if(req.session.passport.user.role === 'admin') {
-    res.status(200).json("Welcome to Admin Panel")
+   const response = await axios.get(`${baseUrl}/allusers`);
+   const usersData = response.data
+   res.status(200).json({message:"Welcome to Admin Panel" ,data: usersData})
    } else {
     res.status(403).json("Permission Denied")
    }

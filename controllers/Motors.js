@@ -22,7 +22,7 @@ module.exports.addNewMotors = async (req, res) => {
 module.exports.editMotors = async (req, res) => {
   try {
     const motorId = req.params.id;
-    const updateMotor = MotorCycle.findByIdAndUpdate(motorId);
+    const updateMotor = MotorCycle.findByIdAndUpdate(motorId ,req.body , {new:true});
     await updateMotor.save();
     res.status(200).json("your bike updated successfuly");
   } catch (e) {
